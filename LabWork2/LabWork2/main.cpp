@@ -6,6 +6,27 @@
 
 using namespace std;
 
+int Search_Binary(int arr[], int left, int right, int key)
+{
+	int midd = 0;
+	while (1)
+	{
+		midd = (left + right) / 2;
+
+		if (key < arr[midd])       
+			right = midd - 1;      
+		else if (key > arr[midd])  
+			left = midd + 1;   
+		else                      
+			return midd;         
+
+		if (left > right)  
+			return -1;
+	}
+}
+
+
+
 void CountElementsWithNoPair(vector<int> &screws, vector<int> &screwsWithNoPair) // COUNT ELEMENTS WITH NO PAIR
 {
 	for (auto &screw : screws)
@@ -18,7 +39,8 @@ void CountElementsWithNoPair(vector<int> &screws, vector<int> &screwsWithNoPair)
 
 void CountMatch(vector<int> &screws, vector<int> &bolts, vector<int> &sbPairs) //COUNT MATCHES WITH SCREWS AND BOLTS
 {
-	for (auto &screw : screws)
+	// Old
+	/*for (auto &screw : screws)
 		for (auto &bolt : bolts)
             if(bolt != 0 && screw == bolt)
             {
@@ -26,7 +48,15 @@ void CountMatch(vector<int> &screws, vector<int> &bolts, vector<int> &sbPairs) /
 				screw = 0;
 				bolt = 0;
                 break;
-            }
+            }*/
+
+	for (auto &screw : screws)
+	{
+		int isContains = Search_Binary(bolts, 0, bolts.size(), screw);
+		if (isContains >= 0) {
+			sbPairs.push_back(screw);
+		}
+	}
 }
 
 void DisplayVector(vector<int> screws) //DISPLAY VECTOR
@@ -91,6 +121,9 @@ int main()
 	// READ INPUT DATA
     ReadInputFile("ExampleData1.txt", screws, bolts);
 
+	// Sort before processing
+	sort(screws, screws+ screws.size());
+	sort(bolts, bolts + bolts.size());
 	// PROCESSING DATA FROM FILE
     CountMatch(screws, bolts, sbPairs);
     CountElementsWithNoPair(screws, screwsWithNoPair);
